@@ -113,6 +113,8 @@ The various transforms done by this module can be disabled individually.  This i
 }
 ```
 
+Additionally, setting the option `inlineReplace:true` will replace `import` statements with `require` statements on the same line, preserving any required order of operations, instead of the default behavior of moving all import-generated requires to the top of the file.
+
 ### Usage with other plugins
 
 By default, this replaces the functionality in `@babel/plugin-transform-modules-commonjs`, which needs to be disabled or after this plugin.

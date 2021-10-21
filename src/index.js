@@ -30,8 +30,8 @@ module.exports = function ({ types: t }) {
     visitor: {
       Program: {
         exit(path, state) {
-          const sources = []
-          const anonymousSources = []
+          let sources = []
+          let anonymousSources = []
           const { scope } = path
 
           let hasDefaultExport = false
@@ -112,7 +112,13 @@ module.exports = function ({ types: t }) {
                 })
               }
 
-              path.remove()
+              if (state.opts.inlineReplace) {
+                path.replaceWithMultiple(sources.concat(anonymousSources));
+                sources = [];
+                anonymousSources = [];
+              } else {
+                path.remove();
+              }
               continue
             }
 
@@ -184,7 +190,12 @@ module.exports = function ({ types: t }) {
                   }
                 }
 
-                path.replaceWithMultiple(nodes)
+                if (state.opts.inlineReplace) {
+                  path.replaceWithMultiple(sources.concat(nodes))
+                  sources = [];
+                } else {
+                  path.replaceWithMultiple(nodes)
+                }
               }
               continue
             }
